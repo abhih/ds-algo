@@ -1,6 +1,6 @@
 from collections import defaultdict
 import sys
-from pdb import set_trace
+
 class Vertex(object):
     count=0
     def __new__(cls,*args):
