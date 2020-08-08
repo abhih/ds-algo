@@ -99,6 +99,45 @@ class Graph(object):
             vertex = item.values()[0][0]
             nbr = item.values()[0][1]
             print("{vertex} --{weight}-- {nbr}".format(vertex=vertex,weight=weight,nbr=nbr))
+#---------------------------------------------------------------------------------------------------------------------------#
+
+    def find_min(self,visited):
+        min_vertex = None,None
+        min_weight = sys.maxint
+        for vertex in self.vertices_list:
+            if visited[vertex]:
+                nbr_vertex = vertex.get_neighbours()
+                for nbr in nbr_vertex:
+                    nbr_weight = vertex.get_neighbour_weight(nbr)
+                    if (not visited[nbr]) and min_weight>nbr_weight:
+                        min_weight = nbr_weight
+                        min_vertex = (vertex,nbr)
+        return min_vertex
+
+    def prim(self,source):
+        visited=defaultdict(lambda : False)
+        parent = self.parent
+        vertex = source
+        nbrs_vertex=vertex.get_neighbours()
+        visited[vertex] = True
+        for index in range(len(self.vertices_list)):
+            vertex, min_vertex  = self.find_min(visited)
+            
+            if not min_vertex:
+                continue
+            print("Vertex")
+            print(str(vertex), str(min_vertex))
+            x_set = self.find_parent(parent,vertex)
+            y_set = self.find_parent(parent,min_vertex)
+            print("Parent")
+            print(str(x_set),str(y_set))
+            if x_set!=y_set:
+                parent[min_vertex]=vertex
+            visited[vertex] = True
+            visited[min_vertex] = True
+            
+        print(["Parent "+str(parent[i]) + "::: Child  "+str(i) for i in parent])
+    
         
     
 A=Vertex("A")
@@ -108,18 +147,33 @@ D=Vertex("D")
 E=Vertex("E")
 F=Vertex("F")
 G=Vertex("G")
-A.set_neighbour(B,"28")
-B.set_neighbour(C,"16")
-#B.set_neighbour(G,"14")
-C.set_neighbour(D,"12")
-D.set_neighbour(E,"22")
-#D.set_neighbour(G,"18")
-E.set_neighbour(F,"23")
-#E.set_neighbour(G,"24")
-F.set_neighbour(A,"10")
+
+
+###
+A.set_neighbour(B,"2")
+B.set_neighbour(A,"2")
+A.set_neighbour(D,"1")
+D.set_neighbour(A,"1")
+B.set_neighbour(D,"3")
+D.set_neighbour(B,"3")
+B.set_neighbour(C,"5")
+C.set_neighbour(B,"5")
+C.set_neighbour(D,"4")
+D.set_neighbour(C,"4")
+###
+# A.set_neighbour(B,"28")
+# B.set_neighbour(C,"16")
+# #B.set_neighbour(G,"14")
+# C.set_neighbour(D,"12")
+# D.set_neighbour(E,"22")
+# #D.set_neighbour(G,"18")
+# E.set_neighbour(F,"23")
+# #E.set_neighbour(G,"24")
+# F.set_neighbour(A,"10")
 
 g=Graph([A,B,C,D,E,F,G])
 #g.print_vertex_weight()
 #g.is_cyclic()
 #g.sort_edges()
-g.kruskal()
+#g.kruskal()
+g.prim(A)
